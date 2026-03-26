@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  COORDINATOR
+  MEMBER
+}
+
+enum MemberStatus {
+  PENDING
+  ACTIVE
+  INACTIVE
+}
+
+enum DocType {
+  CONGRATULATIONS
+  QUIZ_PRORATE
+  ATTENDANCE
+  LATE_STAY
+  EVENT_WRITEUP_EN
+  EVENT_WRITEUP_HI
+}
+
+// ─── Models ───────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  role         Role     @default(MEMBER)
+  isActive     Boolean  @default(true)
+  resetToken   String?
+  resetExpires DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  member         Member?
+  generationLogs GenerationLog[]
+}
+
+model Member {
+  id            String       @id @default(cuid())
+  userId        String?      @unique
+  user          User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  fullName      String
+  rollNumber    String       @unique
+  branch        String
+  yearOfStudy   String
+  department    String
+  dateOfBirth   DateTime
+  personalEmail String
+  collegeEmail  String?
+  phoneNumber   String?
+  status        MemberStatus @default(PENDING)
+  rejectedReason String?
+
+  activeSubjects Subject[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Subject {
+  id       String @id @default(cuid())
+  name     String
+  code     String
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+}
+
+model DocumentTemplate {
+  id        String   @id @default(cuid())
+  type      DocType  @unique
+  name      String
+  content   String   @db.Text
+  version   Int      @default(1)
+  updatedBy String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions TemplateVersion[]
+}
+
+model TemplateVersion {
+  id         String           @id @default(cuid())
+  templateId String
+  template   DocumentTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  content    String           @db.Text
+  version    Int
+  updatedBy  String?
+  createdAt  DateTime         @default(now())
+}
+
+model GenerationLog {
+  id              String   @id @default(cuid())
+  timestamp       DateTime @default(now())
+  generatedById   String
+  generatedBy     User     @relation(fields: [generatedById], references: [id])
+  generatedByName String
+  documentType    DocType
+  eventName       String
+  membersIncluded Json
+  templateVersion Int
+  cloudinaryUrl   String?
+  cloudinaryId    String?
+  ipAddress       String?
+  sessionId       String?
+  pdfFileName     String
+  refNumber       String
+
+  // No updatedAt — immutable by design
+  @@map("generation_logs")
+}
+
+model GlobalSettings {
+  id                  String @id @default("singleton")
+  clubName            String @default("SRMCEM Robotics Club")
+  institutionFull     String @default("Sri Ram Swarup Memorial College of Engineering & Management")
+  institutionShort    String @default("SRMCEM")
+  city                String @default("Lucknow")
+  clubHeadName        String @default("Saarthak Pandey")
+  facultyCoordinator1 String @default("Dr. Sunil Yadav")
+  facultyCoordinator2 String @default("Er. Uddaish Porov")
+  directorName        String @default("")
+  departmentName      String @default("Data & Management")
+  defaultLanguage     String @default("English")
+  refNumberCounter    Int    @default(0)
+  refNumberYear       Int    @default(2026)
+}
