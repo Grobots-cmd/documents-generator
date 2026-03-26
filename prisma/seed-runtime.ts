@@ -19,7 +19,7 @@ export async function runSeedIfEmpty() {
     create: {
       id: "singleton",
       clubName: "SRMCEM Robotics Club",
-      institutionFull: "Sri Ram Swarup Memorial College of Engineering & Management",
+      institutionFull: "Sri Ram Swaroop Memorial College of Engineering & Management",
       institutionShort: "SRMCEM",
       city: "Lucknow",
       clubHeadName: "Saarthak Pandey",
