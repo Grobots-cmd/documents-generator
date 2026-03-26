@@ -4,7 +4,6 @@ import { useState, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronDown, X, UserCheck } from "lucide-react";
@@ -46,22 +45,19 @@ export function MemberSelect({ value, onChange, label = "Select Members", multip
   return (
     <div className="space-y-2">
       <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className={cn(
-              "w-full justify-between bg-background border-white/15 hover:bg-white/5 min-h-10 h-auto py-2",
-              value.length === 0 && "text-muted-foreground"
-            )}
-          >
-            <div className="flex items-center gap-2 flex-wrap flex-1 text-left">
-              <UserCheck className="w-4 h-4 flex-shrink-0" />
-              {value.length === 0 ? label : `${value.length} member${value.length > 1 ? "s" : ""} selected`}
-            </div>
-            <ChevronDown className="w-4 h-4 ml-2 flex-shrink-0 opacity-50" />
-          </Button>
+        <PopoverTrigger
+          role="combobox"
+          aria-expanded={open}
+          className={cn(
+            "inline-flex w-full items-center justify-between rounded-lg border border-white/15 bg-background px-3 py-2 text-sm min-h-10 h-auto hover:bg-white/5 transition-colors cursor-pointer",
+            value.length === 0 && "text-muted-foreground"
+          )}
+        >
+          <div className="flex items-center gap-2 flex-wrap flex-1 text-left">
+            <UserCheck className="w-4 h-4 flex-shrink-0" />
+            {value.length === 0 ? label : `${value.length} member${value.length > 1 ? "s" : ""} selected`}
+          </div>
+          <ChevronDown className="w-4 h-4 ml-2 flex-shrink-0 opacity-50" />
         </PopoverTrigger>
         <PopoverContent className="w-[380px] p-0 border-white/15 bg-card" align="start">
           <Command>

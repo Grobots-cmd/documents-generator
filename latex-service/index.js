@@ -39,6 +39,8 @@ app.post("/compile", async (req, res) => {
   fs.writeFileSync(texFile, latex, "utf8");
 
   try {
+    // Run twice so cross-references, \ref{}, TOC entries resolve correctly
+    await runLatex(texFile, tmpDir);
     await runLatex(texFile, tmpDir);
 
     if (!fs.existsSync(pdfFile)) {

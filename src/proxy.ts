@@ -2,14 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-export async function middleware(req: NextRequest) {
+/**
+ * Route protection proxy (Next.js 16 — replaces deprecated middleware.ts).
+ * Uses next-auth getToken for proper JWT verification.
+ */
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
-
-  // Public routes — skip auth check
-  const publicRoutes = ["/login", "/register", "/reset-password", "/api/auth"];
-  if (publicRoutes.some((r) => pathname.startsWith(r))) {
-    return NextResponse.next();
-  }
 
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   const role = token?.role as string | undefined;
@@ -28,7 +26,7 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Coordinator + Admin routes
+  // Coordinator + Admin only — MEMBERs see nothing here
   if (
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/generate") ||
@@ -44,6 +42,13 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.svg$).*)",
+    /*
+     * Match all paths EXCEPT:
+     * - api routes (including /api/auth/*)
+     * - _next internals
+     * - static assets
+     * - public auth pages
+     */
+    "/((?!api|_next/static|_next/image|favicon\\.ico|login|register|.*\\.png$|.*\\.svg$).*)",
   ],
 };

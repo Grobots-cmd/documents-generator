@@ -4,7 +4,7 @@ import { getAuth } from "@/lib/get-auth";
 import Papa from "papaparse";
 
 const REQUIRED_COLUMNS = [
-  "full_name", "roll_number", "branch", "year", "dob", "email",
+  "full_name", "roll_number", "branch", "year", "dob", "email", "department",
 ];
 
 export async function POST(req: NextRequest) {

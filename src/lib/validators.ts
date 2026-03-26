@@ -93,7 +93,8 @@ export const lateStaySchema = z.object({
   stayDate: z.string().min(1, "Stay date is required"),
   permittedUntilTime: z.string().min(1, "Time is required"),
   venue: z.string().min(2, "Venue is required"),
-  individualLetters: z.boolean().default(false),
+  kindAttentionDept: z.string().min(1, "Please select a department"),
+  individualLetters: z.boolean(),
 });
 
 export const eventWriteUpSchema = z.object({
@@ -105,8 +106,8 @@ export const eventWriteUpSchema = z.object({
   introParagraph: z.string().min(10, "Intro paragraph is required"),
   resultsSection: z.string().min(10, "Results section is required"),
   closingParagraph: z.string().min(10, "Closing paragraph is required"),
-  language: z.enum(["English", "Hindi"]).default("English"),
-  generateBoth: z.boolean().default(false),
+  language: z.enum(["English", "Hindi"]),
+  generateBoth: z.boolean(),
 });
 
 // ─── Global Settings ──────────────────────────────────────────────────────────
