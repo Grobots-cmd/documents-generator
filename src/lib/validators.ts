@@ -122,7 +122,7 @@ export const globalSettingsSchema = z.object({
   facultyCoordinator2: z.string().min(2),
   directorName: z.string().optional(),
   departmentName: z.string().min(2),
-  defaultLanguage: z.string().default("English"),
+  defaultLanguage: z.string(),
 });
 
 // ─── User Management ──────────────────────────────────────────────────────────

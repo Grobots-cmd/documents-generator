@@ -34,7 +34,7 @@ export async function GET() {
   const templates = await prisma.documentTemplate.findMany({
     orderBy: { type: "asc" },
     select: {
-      id: true, type: true, name: true, version: true,
+      id: true, type: true, name: true, content: true, version: true,
       updatedBy: true, updatedAt: true, createdAt: true,
     },
   });
