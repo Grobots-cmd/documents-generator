@@ -8,7 +8,7 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === "nodejs") {
     // ── 1. Auto-seed on first boot ──────────────────────────────────────────
     try {
-      const { runSeedIfEmpty } = await import("../prisma/seed-runtime");
+      const { runSeedIfEmpty } = await import("@/lib/seed-runtime");
       await runSeedIfEmpty();
     } catch (err) {
       console.error("[instrumentation] Seed check failed:", err);
