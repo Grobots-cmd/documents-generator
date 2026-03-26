@@ -13,10 +13,13 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function buildPgConfig(connectionString: string) {
-  // If the URL contains special chars in the password, pg's URL parser fails.
-  // Pass the raw connectionString but also set ssl explicitly.
+  const isPgBouncer = connectionString.includes("pgbouncer=true");
+  // Strip pgbouncer param — pg driver doesn't understand it
+  const cleanUrl = connectionString.replace(/[?&]pgbouncer=true/, "").replace(/\?$/, "");
   return {
-    connectionString,
+    connectionString: cleanUrl,
+    // PgBouncer requires no prepared statements
+    ...(isPgBouncer ? { statement_timeout: 0 } : {}),
     ssl: connectionString.includes("sslmode=require")
       ? { rejectUnauthorized: false }
       : undefined,
